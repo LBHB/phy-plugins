@@ -22,10 +22,9 @@ class ChannelExportUpdate(IPlugin):
     def attach_to_controller(self, controller):
         @connect
         def on_gui_ready(sender,gui):
-            @connect(sender=gui)
-            def on_request_save(sender, *args, controller=controller):
-                #cluster_ids = controller.supervisor.clustering.cluster_ids
-                cluster_ids = [key for key,value in controller.supervisor.cluster_labels['group'].items() if value.lower() in ['good','mua']]
+            @connect
+            def on_save_clustering(sender, spike_clusters, groups, *labels, controller=controller):
+                cluster_ids = [key for key,value in groups.items() if value.lower() in ['good','mua']]
                 best_channels = np.zeros(len(cluster_ids), dtype=int)
                 best_channels_mapped = np.zeros(len(cluster_ids), dtype=int)
                 for i in range(len(cluster_ids)):
