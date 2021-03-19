@@ -7,4 +7,4 @@ class custom_columns(IPlugin):
     def attach_to_controller(self, controller):
         @connect
         def on_controller_ready(sender):
-            controller.supervisor.columns = ['id', 'ch',  'n_spikes', 'group','Amplitude', 'fr', 'ContamPct']
+            controller.supervisor.columns = ['id', 'ch',  'n_spikes', 'group','snr', 'fr', 'ContamPct','KSLabel']
