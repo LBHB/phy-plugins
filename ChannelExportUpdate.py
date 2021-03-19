@@ -28,10 +28,10 @@ class ChannelExportUpdate(IPlugin):
                 cluster_ids = [key for key,value in controller.supervisor.cluster_labels['group'].items() if value.lower() in ['good','mua']]
                 best_channels = np.zeros(len(cluster_ids), dtype=int)
                 best_channels_mapped = np.zeros(len(cluster_ids), dtype=int)
-                from PyQt5.QtCore import pyqtRemoveInputHook
-                from pdb import set_trace
-                pyqtRemoveInputHook()
-                set_trace()
+                #from PyQt5.QtCore import pyqtRemoveInputHook
+                #from pdb import set_trace
+                #pyqtRemoveInputHook()
+                #set_trace()
                 for i in range(len(cluster_ids)):
                     best_channels[i]=controller.get_best_channel(cluster_ids[i])
                 if hasattr(controller.model, 'channel_labels') and controller.model.channel_labels is not None:
