@@ -7,7 +7,7 @@ To activate the plugin, copy this file to `~/.phy/plugins/` and add this line
 to your `~/.phy/phy_config.py`:
 
 ```python
-c.TemplateGUI.plugins = ['ChannelExportUpdate']
+c.TemplateGUI.plugins = ['ExportBestChannels']
 ```
 
 Luke Shaheen - Laboratory of Brain, Hearing and Behavior Nov 2016
@@ -17,14 +17,14 @@ import numpy as np
 from phy import IPlugin, connect
 import os.path as op
 # spike_clusters, groups, labels,
-class ChannelExportUpdate(IPlugin):
+class ExportBestChannels(IPlugin):
 
     def attach_to_controller(self, controller):
         @connect
         def on_gui_ready(sender,gui):
             @connect
             def on_save_clustering(sender, spike_clusters, groups, *labels, controller=controller):
-                cluster_ids = [key for key,value in groups.items() if value.lower() in ['good','mua','noise']]
+                cluster_ids = [key for key,value in groups.items() if value.lower() in ['good','mua']]
                 best_channels = np.zeros(len(cluster_ids), dtype=int)
                 best_channels_mapped = np.zeros(len(cluster_ids), dtype=int)
                 for i in range(len(cluster_ids)):
