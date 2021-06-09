@@ -7,11 +7,11 @@ from phy import IPlugin
 class n_spikes_per_view(IPlugin):
     def attach_to_controller(self, controller):
         """Feel free to keep below just the values you need to change."""
-        controller.n_spikes_waveforms = 500
+        controller.n_spikes_waveforms = 300 #deault 100. Number of spikes per cluster in WaveformView
         #controller.batch_size_waveforms = 10
         #controller.n_spikes_features = 10000
         #controller.n_spikes_features_background = 2500
-        controller.n_spikes_amplitudes = 20000
+        controller.n_spikes_amplitudes = 20000 #deault 10000. Number of spikes per cluster in AmplitudeView
         #controller.n_spikes_correlograms = 100000
 
         # Number of "best" channels kept for displaying the waveforms.
