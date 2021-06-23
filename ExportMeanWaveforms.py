@@ -22,18 +22,10 @@ from phy import IPlugin, connect
 import os.path as op
 from PyQt5.QtWidgets import QMessageBox
 
-def export_mean_waveforms(max_waveforms_per_cluster=1E4,controller=None):
+def export_mean_waveforms(max_waveforms_per_cluster=1E4,controller=None,groups=None):
     #make max_waveforms_per_cluster a really big number if you want to get all the waveforms (slow)
-    #from PyQt5.QtCore import pyqtRemoveInputHook
-    #pyqtRemoveInputHook()
-    #import pdb; pdb.set_trace()
-    cluster_ids = controller.supervisor.clustering.cluster_ids
     # only keep export waveforms for labeled units, otherwise mismatch in dimensions with cluster_group down the line
-    fo = open(os.path.join(controller.model.dir_path, 'cluster_group.tsv'))
-    cgroups = csv.reader(fo, delimiter="\t")
-    labeled_cluster_ids = [int(x[0]) for i, x in enumerate(cgroups) if i>0]
-    fo.close()
-    cluster_ids = [c for c in cluster_ids if c in labeled_cluster_ids]
+    cluster_ids = [key for key,value in groups.items() if value.lower() in ['good','mua']]
     mean_waveforms = np.zeros((controller.model.n_samples_waveforms, len(cluster_ids)))
     for i, ci in enumerate(cluster_ids):
         print(f'Exporting mean waveform for cluster: {ci}, i={i+1}/{len(cluster_ids)} clusters')
@@ -50,8 +42,8 @@ class ExportMeanWaveforms(IPlugin):
     def attach_to_controller(self, controller):
         @connect
         def on_gui_ready(sender, gui):
-            @connect(sender=gui)
-            def on_request_save(sender, *args, controller=controller):
+            @connect
+            def on_save_clustering(sender, spike_clusters, groups, *labels, controller=controller):
                 msgBox = QMessageBox()
                 msgBox.setText("Save mean waveforms?")
                 msgBox.setInformativeText("Always do this on final save, but if sorting is still work in progress, might skip this step for speed")
@@ -60,7 +52,7 @@ class ExportMeanWaveforms(IPlugin):
                 ret = msgBox.exec()
                 if ret == QMessageBox.Save:
                     try:
-                        export_mean_waveforms(controller=controller)
+                        export_mean_waveforms(controller=controller,groups=groups)
                     except:
                         print("No cluster groups have been saved yet, re-save waveforms")
                 else:
