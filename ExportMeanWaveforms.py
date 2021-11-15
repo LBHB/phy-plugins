@@ -44,16 +44,20 @@ class ExportMeanWaveforms(IPlugin):
         def on_gui_ready(sender, gui):
             @connect
             def on_save_clustering(sender, spike_clusters, groups, *labels, controller=controller):
-                msgBox = QMessageBox()
-                msgBox.setText("Save mean waveforms?")
-                msgBox.setInformativeText("Always do this on final save, but if sorting is still work in progress, might skip this step for speed")
-                msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard)
-                msgBox.setDefaultButton(QMessageBox.Save)
-                ret = msgBox.exec()
-                if ret == QMessageBox.Save:
-                    try:
-                        export_mean_waveforms(controller=controller,groups=groups)
-                    except:
-                        print("No cluster groups have been saved yet, re-save waveforms")
+                ask_to_save = False
+                if ask_to_save:
+                    msgBox = QMessageBox()
+                    msgBox.setText("Save mean waveforms?")
+                    msgBox.setInformativeText("Always do this on final save, but if sorting is still work in progress, might skip this step for speed")
+                    msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard)
+                    msgBox.setDefaultButton(QMessageBox.Save)
+                    ret = msgBox.exec()
+                    if ret == QMessageBox.Save:
+                        try:
+                            export_mean_waveforms(controller=controller,groups=groups)
+                        except:
+                            print("No cluster groups have been saved yet, re-save waveforms")
+                    else:
+                        pass
                 else:
-                    pass
+                    export_mean_waveforms(controller=controller, groups=groups)
